@@ -116,6 +116,15 @@ function renderForecast(card, data) {
       .toFormat('t');
   card.querySelector('.current .sunset .value').textContent = sunset;
 
+  // feels like
+  let feelsLike = data.currently.apparentTemperature;
+  let sameTemp = Math.round(data.currently.temperature) === Math.round(feelsLike);
+  card.querySelector('.current .feelsLike').style.visibility = sameTemp ? 'hidden' : 'visible';
+  if (!sameTemp) {
+    // update content
+    card.querySelector('.current .feelsLike .value').textContent = Math.round(feelsLike);
+  }
+
   // Render the next 7 days.
   const futureTiles = card.querySelectorAll('.future .oneday');
   futureTiles.forEach((tile, index) => {
