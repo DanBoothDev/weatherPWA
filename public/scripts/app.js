@@ -66,6 +66,17 @@ function removeLocation(evt) {
 }
 
 /**
+ * Translates degrees into a compass bearing
+ *
+ * @param {Int} degree between 0-360. True north 0° and progressing clockwise
+ */
+function degToCompass(degree) {
+  let val = Math.round(degree / 22.5);
+  let arr = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+  return arr[(val % 16)];
+}
+
+/**
  * Renders the forecast data into the card element.
  *
  * @param {Element} card The card element to update.
@@ -103,8 +114,10 @@ function renderForecast(card, data) {
       .textContent = Math.round(data.currently.humidity * 100);
   card.querySelector('.current .wind .value')
       .textContent = Math.round(data.currently.windSpeed);
+
+  let windBearing = Math.round(data.currently.windBearing)
   card.querySelector('.current .wind .direction')
-      .textContent = Math.round(data.currently.windBearing);
+      .textContent = `${degToCompass(windBearing)} ${windBearing}`;
   const sunrise = luxon.DateTime
       .fromSeconds(data.daily.data[0].sunriseTime)
       .setZone(data.timezone)
