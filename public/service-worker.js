@@ -18,7 +18,7 @@
 'use strict';
 
 // CODELAB: Update cache names any time any of the cached files change.
-const CACHE_NAME = 'static-cache-v2';
+const CACHE_NAME = 'static-cache-v1';
 
 // list of files to cache
 const FILES_TO_CACHE = [
@@ -55,6 +55,19 @@ self.addEventListener('activate', (evt) => {
 
 self.addEventListener('fetch', (evt) => {
   console.log('[ServiceWorker] Fetch', evt.request.url);
-  // CODELAB: Add fetch event handler here.
+  //fetch event handler
+  if (evt.request.mode !== 'navigate') {
+    // Not a page navigation, bail.
+    return;
+  }
+  evt.respondWith(
+      fetch(evt.request)
+          .catch(() => {
+            return caches.open(CACHE_NAME)
+                .then((cache) => {
+                  return cache.match('offline.html');
+                });
+          })
+  );
 
 });
